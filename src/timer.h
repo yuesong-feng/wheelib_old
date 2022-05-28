@@ -1,17 +1,29 @@
-#ifndef _TIMER_H_
-#define _TIMER_H_
-#include <time.h>
-#include <stdio.h>
+#pragma once
+#include <string>
+using std::string;
 
-static clock_t ct = 0;
+class Timer {
+ private:
+  string scope_;
+  clock_t start_;
+  clock_t last_;
 
-#define TIMER                                             \
-  if (ct == 0) {                                          \
-    ct = clock();                                         \
-  } else {                                                \
-    clock_t now = clock();                                \
-    printf("timing from last point: %lu ms\n", now - ct); \
-    ct = now;                                             \
-  }
+ public:
+  Timer() = delete;
+  Timer(string &&str);
+  ~Timer();
+  void time();
+};
 
-#endif
+Timer::Timer(string &&str) : scope_(std::move(str)), start_(0), last_(0) {}
+
+void Timer::time() {
+  clock_t now = clock();
+  printf("time from last checkpoint: %lu ms\n", now - last_);
+  last_ = now;
+}
+
+Timer::~Timer() {
+  clock_t end = clock();
+  printf("scope: %s, time: %lu ms\n", scope_.c_str(), end - start_);
+}

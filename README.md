@@ -31,7 +31,8 @@ SET_LOG_TARGET(log_file)    //example: SET_LOG_TARGET("./log.txt")
 ```
 ### src/Timer.h
 ```cpp
-// Register a time and set scope. When scope ends, time spent will be printed.
+// Register a timer in a scope and set a name. 
+// When scope ends, time spent will be printed.
 Timer tm("scope");
 
 // Print time spent from last checkpoint.

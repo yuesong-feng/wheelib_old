@@ -35,6 +35,6 @@ SET_LOG_TARGET(log_file)    //example: SET_LOG_TARGET("./log.txt")
 // When scope ends, time spent will be printed.
 Timer tm("scope");
 
-// Print time spent from last checkpoint.
-ti.time();
+// Print time spent from last checkpoint tm.time()
+tm.time();
 ```

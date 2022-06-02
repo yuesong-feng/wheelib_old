@@ -1,4 +1,4 @@
-TARGET_EXEC := main
+TARGET_EXEC := test_thpool
 
 BUILD_DIR := ./build
 SRC_DIRS := ./src

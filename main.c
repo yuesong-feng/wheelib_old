@@ -4,26 +4,44 @@
 #include "thpool.h"
 
 static int a = 0;
-void fn() { printf("fn\n"); }
-struct fn2_args {
+pthread_mutex_t mutex_a;
+
+void fn1() { printf("fn1\n"); }
+
+typedef struct fn2_args {
   int a;
   char b;
-};
-void fn2(struct fn2_args *args) { printf("fn2 %d, %c\n", args->a, args->b); }
+} fn2_args;
+void fn2(fn2_args *args) { printf("fn2 %d, %c\n", args->a, args->b); }
 
-void add() { a = a + 1; }
+void fn3(struct {int a;const char *str;} * args) { printf("fn2 %d, %s\n", args->a, args->str); }
+
+void add() {
+  pthread_mutex_lock(&mutex_a);
+  a = a + 1;
+  pthread_mutex_unlock(&mutex_a);
+}
 
 int main() {
-  thpool *tp = thpool_init(3);
+  thpool *tp = thpool_init(8);
 
-  thpool_add(tp, fn, NULL);
-  thpool_add(tp, fn2, &(struct fn2_args){1, 'a'});
-  thpool_add(tp, fn2, &(struct fn2_args){2, 'b'});
-  thpool_add(tp, fn2, &(struct fn2_args){3, 'c'});
-  for(int i = 0; i < 1000; i++){
+  thpool_add(tp, fn1, NULL);
+
+  fn2_args args = {
+      .a = 1,
+      .b = 'A',
+  };
+  thpool_add(tp, fn2, &args);
+
+  thpool_add(tp, fn3, &(struct {int a; const char* str;}){3, "hello world!"});
+
+  pthread_mutex_init(&mutex_a, NULL);
+  for (int i = 0; i < 1000; i++) {
     thpool_add(tp, add, NULL);
   }
   thpool_destroy(tp);
-  printf("%d\n", a);
+  
+  pthread_mutex_destroy(&mutex_a);
+  printf("a: %d\n", a);
   return 0;
 }

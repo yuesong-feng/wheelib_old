@@ -7,16 +7,12 @@ void *worker(void *arg) {
   thpool *tp = (thpool *)arg;
   while (1) {
     pthread_mutex_lock(&(tp->mutex));
-    // while (tp->stop || queue_empty(tp->tasks)) {
-    //   pthread_cond_wait(&(tp->cond), &(tp->mutex));
-    // }
+    while (!tp->stop && queue_empty(tp->tasks)) {
+      pthread_cond_wait(&(tp->cond), &(tp->mutex));
+    }
     if (tp->stop && queue_empty(tp->tasks)) {
       pthread_mutex_unlock(&(tp->mutex));
       return NULL;
-    }
-    if (queue_empty(tp->tasks)) {
-      pthread_mutex_unlock(&(tp->mutex));
-      continue;
     }
     task *t = (task *)queue_front(tp->tasks);
     queue_pop_front(tp->tasks);
@@ -50,17 +46,18 @@ void thpool_add(thpool *tp, void *fn, void *args) {
   pthread_mutex_lock(&(tp->mutex));
   queue_push_back(tp->tasks, t);
   pthread_mutex_unlock(&(tp->mutex));
-  // pthread_cond_signal(&(tp->cond));
+  pthread_cond_signal(&(tp->cond));
 }
 
 void thpool_destroy(thpool *tp) {
   tp->stop = 1;
+  pthread_cond_broadcast(&(tp->cond));
   for (int i = 0; i < tp->size; ++i) {
     pthread_join(tp->threads[i], NULL);
   }
   pthread_cond_destroy(&(tp->cond));
   pthread_mutex_destroy(&(tp->mutex));
-  queue_destroy(tp->tasks);
   free(tp->threads);
+  queue_destroy(tp->tasks);
   free(tp);
 }

@@ -14,5 +14,4 @@ void queue_pop_front(queue *q);
 void *queue_back(queue *q);
 void *queue_front(queue *q);
 
-
 #endif

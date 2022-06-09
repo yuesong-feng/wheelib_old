@@ -40,7 +40,6 @@ thpool *thpool_init(int size) {
 
 void thpool_add(thpool *tp, void *fn, void *args) {
   task *t = (task *)malloc(sizeof(task));
-  memset(t, 0, sizeof(task));
   t->fn = fn;
   t->args = args;
   pthread_mutex_lock(&(tp->mutex));

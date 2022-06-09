@@ -15,6 +15,8 @@ INC_FLAGS += -I./
 LDFLAGS := -L$(BUILD_DIR)/lib
 
 all: $(C_EXES) 
+CFLAGS := -g
+CXXFLAGS := -g -std=c++11
 
 $(C_EXES): % : $(BUILD_DIR)/obj/%.c.o $(BUILD_DIR)/lib/libwheelib.so
 	@mkdir -p $(dir $(BUILD_DIR)/bin/$@)
@@ -22,7 +24,7 @@ $(C_EXES): % : $(BUILD_DIR)/obj/%.c.o $(BUILD_DIR)/lib/libwheelib.so
 
 $(C_EXE_OBJS): $(BUILD_DIR)/obj/%.c.o : %.c
 	@mkdir -p $(dir $@)
-	$(CC) -MMD -MP $(INC_FLAGS) $< -c -o $@ 
+	$(CC) $(CFLAGS) -MMD -MP $(INC_FLAGS) $< -c -o $@ 
 
 
 $(BUILD_DIR)/lib/libwheelib.so: $(OBJS)
@@ -31,12 +33,10 @@ $(BUILD_DIR)/lib/libwheelib.so: $(OBJS)
 
 CPPFLAGS := -MMD -MP $(INC_FLAGS) -fPIC
 
-CFLAGS := -g
 $(BUILD_DIR)/obj/%.c.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-CXXFLAGS := -g -std=c++11
 $(BUILD_DIR)/obj/%.cpp.o: %.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@

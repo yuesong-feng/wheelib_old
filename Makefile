@@ -1,47 +1,47 @@
 BUILD_DIR := ./build
 
-EXE_SRCS := $(wildcard *.c)
-TARGETS = $(EXE_SRCS:.c=)
-TARGETS_PATH := $(BUILD_DIR)/bin
-# EXE := $(EXE_SRCS:%.cpp=$(BUILD_DIR)/bin/%)
+C_EXE_SRCS := $(wildcard *.c)
+C_EXES := $(C_EXE_SRCS:%.c=%)
+C_EXE_OBJS := $(C_EXE_SRCS:%=$(BUILD_DIR)/obj/%.o)
 
-# if cpp, use the following
-# EXE_SRCS := program.cpp
-# EXE := $(EXE_SRCS:%.cpp=$(BUILD_DIR)/bin/%)
-
-# name of lib
-LIB := libwheelib.so 
-
-LIB_SRCS := $(wildcard src/*.c src/*.cpp)
-LIB_OBJS := $(LIB_SRCS:%=$(BUILD_DIR)/%.o)
-LIB_DEPS := $(LIB_OBJS:.o=.d)
+SRCS := $(shell find src -name '*.c' -or -name '*.cpp')
+OBJS := $(SRCS:%=$(BUILD_DIR)/obj/%.o)
+DEPS := $(OBJS:.o=.d)
 
 INC_DIRS := $(shell find ./src -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
-CPPFLAGS := $(INC_FLAGS) -MMD -MP
+INC_FLAGS += -I./
 
-LDFLAGS := -L$(BUILD_DIR)
+LDFLAGS := -L$(BUILD_DIR)/lib
+
+all: $(C_EXES) 
+
+$(C_EXES): % : $(BUILD_DIR)/obj/%.c.o $(BUILD_DIR)/lib/libwheelib.so
+	@mkdir -p $(dir $(BUILD_DIR)/bin/$@)
+	$(CC) $(LDFLAGS) -lwheelib $< -o $(BUILD_DIR)/bin/$@
+
+$(C_EXE_OBJS): $(BUILD_DIR)/obj/%.c.o : %.c
+	@mkdir -p $(dir $@)
+	$(CC) -MMD -MP $(INC_FLAGS) $< -c -o $@ 
+
+
+$(BUILD_DIR)/lib/libwheelib.so: $(OBJS)
+	@mkdir -p $(dir $@)
+	$(CC) -shared $^ -o $@
+
+CPPFLAGS := -MMD -MP $(INC_FLAGS) -fPIC
+
 CFLAGS := -g
-
-all: $(TARGETS)
-
-$(TARGETS): % : %.c $(BUILD_DIR)/$(LIB) $(LIB_OBJS)
-	@echo $(TARGETS_PATH)
-	mkdir -p $(dir $(TARGETS_PATH)/$@)
-	$(CC)  $^ -o $(TARGETS_PATH)/$@ $(CXXFLAGS) $(INC_FLAGS) $(LDFLAGS)
-
-$(BUILD_DIR)/$(LIB): $(LIB_OBJS)
-	$(CC) $(CXXFLAGS) $(INC_FLAGS) -shared -fPIC -o $@ $^
-
-$(BUILD_DIR)/%.c.o: %.c
-	mkdir -p $(dir $@)
+$(BUILD_DIR)/obj/%.c.o: %.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/%.cpp.o: %.cpp
-	mkdir -p $(dir $@)
+CXXFLAGS := -g -std=c++11
+$(BUILD_DIR)/obj/%.cpp.o: %.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	rm -r $(BUILD_DIR)
 
--include $(LIB_DEPS)
+-include $(DEPS)

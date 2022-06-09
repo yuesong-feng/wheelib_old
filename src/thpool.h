@@ -1,7 +1,7 @@
 #ifndef _THPOOL_H_
 #define _THPOOL_H_
-#include "pthread.h"
-#include "queue.h"
+#include <pthread.h>
+#include "src/ds/queue.h"
 
 typedef struct task {
   void (*fn)(void *);

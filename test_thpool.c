@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "thpool.h"
+#include "src/thpool.h"
 
 static int a = 0;
 pthread_mutex_t mutex_a;

@@ -9,6 +9,7 @@ typedef struct dnode {
 
 typedef struct dlist {
   dnode *head;
+  int size;
 } dlist;
 
 dlist *dlist_init();
@@ -20,5 +21,6 @@ void dlist_pop_back(dlist *dl);
 void dlist_pop_front(dlist *dl);
 void *dlist_back(dlist *dl);
 void *dlist_front(dlist *dl);
+int dlist_size(dlist *dl);
 
 #endif

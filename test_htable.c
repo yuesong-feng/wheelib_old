@@ -21,11 +21,11 @@ int main() {
   if (val2 != NULL) {
     printf("%d\n", *(int *)val2);
   }
-  void *val3 = htable_at(ht, 4);
+  void *val3 = htable_at(ht, 3);
   if (val3 != NULL) {
     printf("%d\n", *(int *)val3);
   }
-
+  htable_insert(ht, 2, &arr[5]);
   htable_destroy(ht);
   return 0;
 }

@@ -44,20 +44,18 @@ void htable_insert(htable *ht, int key, void *val) {
     ht->table[loc]->val = val;
   } else {
     hnode *hn = ht->table[loc];
-    while (hn->next != NULL) {
+    hnode *last = NULL;
+    while (hn != NULL) {
       if (hn->key == key) {
         printf("key %d already exist!\n", key);
         return;
       }
+      last = hn;
       hn = hn->next;
     }
-    if (hn->key == key) {
-      printf("key %d already exist!\n", key);
-      return;
-    }
-    hn->next = hnode_init();
-    hn->next->key = key;
-    hn->next->val = val;
+    last->next = hnode_init();
+    last->next->key = key;
+    last->next->val = val;
   }
 }
 
@@ -70,11 +68,11 @@ hnode *htable_find(htable *ht, int key) {
   return hn;
 }
 
-void *htable_at(htable *ht, int key){
-    hnode *hn = htable_find(ht, key);
-    if(hn == NULL){
-        return NULL;
-    } else{
-        return hn->val;
-    }
+void *htable_at(htable *ht, int key) {
+  hnode *hn = htable_find(ht, key);
+  if (hn == NULL) {
+    return NULL;
+  } else {
+    return hn->val;
+  }
 }

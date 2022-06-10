@@ -4,6 +4,7 @@
 
 dlist *dlist_init() {
   dlist *dl = (dlist *)malloc(sizeof(dlist));
+  dl->size = 0;
   dl->head = (dnode *)malloc(sizeof(dnode));
   dl->head->val = NULL;
   dl->head->next = dl->head;
@@ -30,6 +31,7 @@ void dlist_push_back(dlist *dl, void *val) {
   dn->next = dl->head;
   dl->head->prev->next = dn;
   dl->head->prev = dn;
+  dl->size++;
 }
 
 void dlist_push_front(dlist *dl, void *val) {
@@ -39,12 +41,14 @@ void dlist_push_front(dlist *dl, void *val) {
   dn->next = dl->head->next;
   dl->head->next = dn;
   dn->next->prev = dn;
+  dl->size++;
 }
 
 void dlist_pop_back(dlist *dl) {
   dnode *back = dl->head->prev;
   back->prev->next = dl->head;
   dl->head->prev = back->prev;
+  dl->size--;
   free(back);
 }
 
@@ -52,6 +56,7 @@ void dlist_pop_front(dlist *dl) {
   dnode *front = dl->head->next;
   dl->head->next = front->next;
   front->next->prev = dl->head;
+  dl->size--;
   free(front);
 }
 
@@ -69,4 +74,8 @@ void *dlist_front(dlist *dl) {
   } else {
     return dl->head->next->val;
   }
+}
+
+int dlist_size(dlist *dl){
+  return dl->size;
 }

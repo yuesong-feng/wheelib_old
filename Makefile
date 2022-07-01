@@ -5,7 +5,6 @@ EXES := $(EXE_SRCS:%.c=%)
 EXE_OBJS := $(EXE_SRCS:%=$(BUILD_DIR)/obj/%.o)
 EXE_DEPS := $(EXE_OBJS:.o=.d)
 
-
 all: $(EXES) 
 
 # link exe object and dynamic library
@@ -14,7 +13,6 @@ LDFLAGS := -L$(BUILD_DIR)/lib
 $(EXES): % : $(BUILD_DIR)/obj/%.c.o $(BUILD_DIR)/lib/libwheelib.so
 	@mkdir -p $(dir $(BUILD_DIR)/bin/$@)
 	$(CC) $(LDFLAGS) -lwheelib $< -o $(BUILD_DIR)/bin/$@
-
 
 # build exe object
 EXE_INC := -I./

@@ -1,0 +1,61 @@
+BUILD_DIR := ./build
+
+EXE_SRCS := $(wildcard test/*.c)
+EXES := $(EXE_SRCS:%.c=%)
+EXE_OBJS := $(EXE_SRCS:%=$(BUILD_DIR)/obj/%.o)
+EXE_DEPS := $(EXE_OBJS:.o=.d)
+
+all: $(EXES) 
+
+# link exe object and dynamic library
+LDFLAGS := -L$(BUILD_DIR)/lib
+
+$(EXES): % : $(BUILD_DIR)/obj/%.c.o $(BUILD_DIR)/lib/libwheelib.so
+	@mkdir -p $(dir $(BUILD_DIR)/bin/$@)
+	$(CC) $(LDFLAGS) -g -lwheelib $< -o $(BUILD_DIR)/bin/$@
+
+# build exe object
+EXE_INC := -I./src
+EXE_CPP_FLAGS := $(EXE_INC) -MMD -MP 
+
+$(EXE_OBJS): $(BUILD_DIR)/obj/%.c.o : %.c
+	@mkdir -p $(dir $@)
+	$(CC) $(EXE_CPP_FLAGS) $< -g -c -o $@ 
+
+
+###############################################
+#            Build dynamic library           ##
+###############################################
+LIB_SRCS := $(shell find src -name '*.c' -or -name '*.cpp')	# all source files
+LIB_OBJS := $(LIB_SRCS:%=$(BUILD_DIR)/obj/%.o)				# all object files
+LIB_DEPS := $(LIB_OBJS:.o=.d)								# all dependencies
+LIB_INC := -I./src											# include dir
+
+$(BUILD_DIR)/lib/libwheelib.so: $(LIB_OBJS)
+	@mkdir -p $(dir $@)
+	$(CC) -shared $^ -g -o $@
+
+
+# -MMD and -MP generate .d
+# for both c and cpp
+CPPFLAGS := $(LIB_INC) -MMD -MP -fPIC
+
+LIB_CFLAGS := -g
+# all .c => .o + .d
+$(BUILD_DIR)/obj/%.c.o: %.c
+	@mkdir -p $(dir $@)
+	$(CC) $(LIB_CPPFLAGS) $(LIB_CFLAGS) -c $< -o $@
+
+LIB_CXXFLAGS := -g =std=c++11
+# all .cpp => .o + .d
+$(BUILD_DIR)/obj/%.cpp.o: %.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(LIB_CPPFLAGS) $(LIB_CXXFLAGS) -c $< -o $@
+
+
+clean:
+	rm -r $(BUILD_DIR)
+
+# dependencies
+-include $(LIB_DEPS)
+-include $(EXE_DEPS)

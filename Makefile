@@ -1,57 +1,45 @@
 BUILD_DIR := ./build
 
-EXE_SRCS := $(wildcard *.c)
-EXES := $(EXE_SRCS:%.c=%)
-EXE_OBJS := $(EXE_SRCS:%=$(BUILD_DIR)/obj/%.o)
-EXE_DEPS := $(EXE_OBJS:.o=.d)
+# $@：表示目标文件
+# $^：表示所有依赖文件
+# $<：表示第一个依赖文件
+
+EXE_SRCS = $(wildcard test/*.c)
+EXE_OBJS = $(EXE_SRCS:%=$(BUILD_DIR)/obj/%.o)
+EXE_DEPS = $(EXE_OBJS:.o=.d)
+EXES = $(EXE_SRCS:test/%.c=%)
 
 all: $(EXES) 
 
-# link exe object and dynamic library
-LDFLAGS := -L$(BUILD_DIR)/lib
-
-$(EXES): % : $(BUILD_DIR)/obj/%.c.o $(BUILD_DIR)/lib/libwheelib.so
+$(EXES): % : $(EXE_OBJS) $(BUILD_DIR)/lib/libwheelib.so
 	@mkdir -p $(dir $(BUILD_DIR)/bin/$@)
-	$(CC) $(LDFLAGS) -lwheelib $< -o $(BUILD_DIR)/bin/$@
+	gcc -L./build/lib -lwheelib $< -o $(BUILD_DIR)/bin/$@
 
-# build exe object
-EXE_INC := -I./
-EXE_CPP_FLAGS := $(EXE_INC) -MMD -MP 
-
-$(EXE_OBJS): $(BUILD_DIR)/obj/%.c.o : %.c
+$(BUILD_DIR)/obj/%.c.o : %.c
 	@mkdir -p $(dir $@)
-	$(CC) $(EXE_CPP_FLAGS) $< -c -o $@ 
-
+	gcc -MMD -MP -g -c $< -o $@
 
 ###############################################
 #            Build dynamic library           ##
 ###############################################
-LIB_SRCS := $(shell find src -name '*.c' -or -name '*.cpp')
-LIB_OBJS := $(LIB_SRCS:%=$(BUILD_DIR)/obj/%.o)
-LIB_DEPS := $(LIB_OBJS:.o=.d)
-# LIB_INC := $(addprefix -I,$(shell find ./src -type d))
-LIB_INC := -I.
+LIB_SRCS = $(shell find src -name '*.c' -or -name '*.cpp')	# all source files
+LIB_OBJS = $(LIB_SRCS:%=$(BUILD_DIR)/obj/%.o)				# all object files
+LIB_DEPS = $(LIB_OBJS:.o=.d)								# all dependencies
 
+# all .o => .so
 $(BUILD_DIR)/lib/libwheelib.so: $(LIB_OBJS)
 	@mkdir -p $(dir $@)
-	$(CC) -shared $^ -o $@
+	gcc -shared $^ -o $@
 
-# -MMD and -MP generate .d
-# for both c and cpp
-LIB_CPPFLAGS := $(LIB_INC) -MMD -MP  -fPIC
-
-LIB_CFLAGS := -g
 # all .c => .o + .d
 $(BUILD_DIR)/obj/%.c.o: %.c
 	@mkdir -p $(dir $@)
-	$(CC) $(LIB_CPPFLAGS) $(LIB_CFLAGS) -c $< -o $@
+	gcc -MMD -MP -I./src -g -fPIC -c $< -o $@
 
-LIB_CXXFLAGS := -g =std=c++11
 # all .cpp => .o + .d
 $(BUILD_DIR)/obj/%.cpp.o: %.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(LIB_CPPFLAGS) $(CXXFLAGS) -c $< -o $@
-
+	g++ -MMD -MP -I./src -g -std=c++11 -fPIC -c $< -o $@
 
 clean:
 	rm -r $(BUILD_DIR)

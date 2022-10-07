@@ -1,4 +1,4 @@
-#include "src/ds/dlist.h"
+#include "ds/dlist.h"
 
 #include <stdlib.h>
 

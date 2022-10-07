@@ -1,6 +1,6 @@
 #ifndef _QUEUE_H_
 #define _QUEUE_H_
-#include "src/ds/dlist.h"
+#include "ds/dlist.h"
 
 typedef struct queue{
     dlist *dl;

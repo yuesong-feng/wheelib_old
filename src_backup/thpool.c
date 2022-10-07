@@ -1,4 +1,4 @@
-#include "src/thpool.h"
+#include "thpool.h"
 
 #include <stdlib.h>
 #include <string.h>

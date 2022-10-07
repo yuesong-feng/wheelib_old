@@ -1,4 +1,4 @@
-#include "src/ds/queue.h"
+#include "ds/queue.h"
 
 #include <stdlib.h>
 

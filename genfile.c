@@ -6,19 +6,13 @@
 #include <errno.h>
 long long get_size(const char *str){
 	int len = strlen(str);
-	int mul = -1;
-	if(str[len - 1] == 'b') 
-		mul = 1;
-	else if(str[len - 1] == 'B')
-		mul = 8;
-	else
-		return -1;
-	if(str[len - 2] == 'k' || str[len - 2] == 'K'){
-		mul *= 1024;
-	} else if(str[len - 2] == 'm' || str[len - 2] == 'M') {
-		mul *= 1024 * 1024;
-	} else if(str[len - 2] == 'g' || str[len - 2] == 'G') {
-		mul *= 1024 * 1024 * 1024;
+	int mul = 1;
+	if(str[len - 1] == 'k' || str[len - 1] == 'K'){
+		mul = 1024;
+	} else if(str[len - 1] == 'm' || str[len - 1] == 'M') {
+		mul = 1024 * 1024;
+	} else if(str[len - 1] == 'g' || str[len - 1] == 'G') {
+		mul = 1024 * 1024 * 1024;
 	}
 	long long num = atoll(str);
 	long long ret = num * mul;

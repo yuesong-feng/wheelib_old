@@ -4,10 +4,10 @@ BUILD_DIR := ./build
 # $^：表示所有依赖文件
 # $<：表示第一个依赖文件
 
-EXE_SRCS = $(wildcard test/*.c)
+EXE_SRCS = $(wildcard *.c)
 EXE_OBJS = $(EXE_SRCS:%=$(BUILD_DIR)/obj/%.o)
 EXE_DEPS = $(EXE_OBJS:.o=.d)
-EXES = $(EXE_SRCS:test/%.c=%)
+EXES = $(EXE_SRCS:%.c=%)
 
 all: $(EXES) 
 

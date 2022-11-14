@@ -1,6 +1,6 @@
-#include "hash_table.h"
+#include "log.h"
 
-int main(){
-	ht_hash_table* ht = ht_new();
-	ht_del_hash_table(ht);
+int main() {
+	LOG_INFO("log test %d", 8);
+	return 0;
 }

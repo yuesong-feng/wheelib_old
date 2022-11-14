@@ -1,5 +1,4 @@
-#include "ds/dlist.h"
-
+#include "dlist.h"
 #include <stdlib.h>
 
 dlist *dlist_init() {
@@ -22,8 +21,6 @@ void dlist_destroy(dlist *dl) {
   free(dl);
 }
 
-int dlist_empty(dlist *dl) { return dl->head->next == dl->head; }
-
 void dlist_push_back(dlist *dl, void *val) {
   dnode *dn = (dnode *)malloc(sizeof(dnode));
   dn->val = val;
@@ -45,6 +42,7 @@ void dlist_push_front(dlist *dl, void *val) {
 }
 
 void dlist_pop_back(dlist *dl) {
+  if (dl->size == 0) return;
   dnode *back = dl->head->prev;
   back->prev->next = dl->head;
   dl->head->prev = back->prev;
@@ -53,6 +51,7 @@ void dlist_pop_back(dlist *dl) {
 }
 
 void dlist_pop_front(dlist *dl) {
+  if (dl->size == 0) return;
   dnode *front = dl->head->next;
   dl->head->next = front->next;
   front->next->prev = dl->head;
@@ -61,7 +60,7 @@ void dlist_pop_front(dlist *dl) {
 }
 
 void *dlist_back(dlist *dl) {
-  if (dlist_empty(dl)) {
+  if (dl->size == 0) {
     return NULL;
   } else {
     return dl->head->prev->val;
@@ -69,13 +68,13 @@ void *dlist_back(dlist *dl) {
 }
 
 void *dlist_front(dlist *dl) {
-  if (dlist_empty(dl)) {
+  if (dl->size == 0) {
     return NULL;
   } else {
     return dl->head->next->val;
   }
 }
 
-int dlist_size(dlist *dl){
+size_t dlist_size(dlist *dl){
   return dl->size;
 }

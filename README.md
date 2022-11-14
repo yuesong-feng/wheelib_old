@@ -8,7 +8,6 @@ C wheel lib.
 | src/queue.h  | queue       |
 | src/thpool.h | thread pool |
 | src/log.h    | log system  |
-| src/Timer.h  | timer       |
 
 ### src/thpool.h
 
@@ -31,15 +30,4 @@ LOG(fmt, ...)   //example: LOG("int: %d, Hello %c!", a, str)
 
 // set log output target
 SET_LOG_TARGET(log_file)    //example: SET_LOG_TARGET("./log.txt")
-```
-
-### src/Timer.h
-
-```cpp
-// Register a timer in a scope and set a name. 
-// When scope ends, time spent will be printed.
-Timer tm("scope");
-
-// Print time spent from last checkpoint tm.time()
-tm.time();
 ```

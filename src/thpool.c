@@ -7,10 +7,10 @@ void *worker(void *arg) {
   thpool *tp = (thpool *)arg;
   while (1) {
     pthread_mutex_lock(&(tp->mutex));
-    while (!tp->stop && queue_empty(tp->tasks)) {
+    while (!tp->stop && queue_size(tp->tasks) == 0) {
       pthread_cond_wait(&(tp->cond), &(tp->mutex));
     }
-    if (tp->stop && queue_empty(tp->tasks)) {
+    if (tp->stop && queue_size(tp->tasks) == 0) {
       pthread_mutex_unlock(&(tp->mutex));
       return NULL;
     }

@@ -31,7 +31,7 @@ $(BUILD_DIR)/lib/lib$(LIB).so: $(LIB_OBJ)
 # all .c => .o + .d
 $(BUILD_DIR)/obj/%.o: %.c
 	@mkdir -p $(dir $@)
-	gcc -MMD -MP -I$(SRC_DIR) -g -fPIC -c $< -o $@
+	gcc -MMD -MP -I$(SRC_DIR) -g -Wall -fPIC -c $< -o $@
 
 clean:
 	rm -rf $(BUILD_DIR)

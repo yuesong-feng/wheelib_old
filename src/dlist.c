@@ -1,4 +1,5 @@
 #include "dlist.h"
+
 #include <stdlib.h>
 
 dlist *dlist_init() {
@@ -75,6 +76,4 @@ void *dlist_front(dlist *dl) {
   }
 }
 
-size_t dlist_size(dlist *dl){
-  return dl->size;
-}
+int dlist_size(dlist *dl) { return dl->size; }

@@ -1,62 +1,60 @@
 #include "thpool.h"
 
 #include <stdlib.h>
-#include <string.h>
 
-void *worker(void *arg) {
+static void *worker(void *arg) {
   thpool *tp = (thpool *)arg;
   while (1) {
-    pthread_mutex_lock(&(tp->mutex));
-    while (!tp->stop && queue_size(tp->tasks) == 0) {
-      pthread_cond_wait(&(tp->cond), &(tp->mutex));
+    pthread_mutex_lock(&tp->jobs_mutex);
+    while (!tp->stop && dlist_size(tp->jobs) == 0) {
+      pthread_cond_wait(&tp->jobs_cond, &tp->jobs_mutex);
     }
-    if (tp->stop && queue_size(tp->tasks) == 0) {
-      pthread_mutex_unlock(&(tp->mutex));
-      return NULL;
+    if (tp->stop && dlist_size(tp->jobs) == 0) {
+      pthread_mutex_unlock(&tp->jobs_mutex);
+      break;
     }
-    task *t = (task *)queue_front(tp->tasks);
-    queue_pop_front(tp->tasks);
-    pthread_mutex_unlock(&(tp->mutex));
-    t->fn(t->args);
-    free(t);
+    job *j = (job *)dlist_front(tp->jobs);
+    dlist_pop_front(tp->jobs);
+    pthread_mutex_unlock(&tp->jobs_mutex);
+    j->fn(j->arg);
+    free(j);
   }
+  return NULL;
 }
 
 thpool *thpool_init(int size) {
   thpool *tp = (thpool *)malloc(sizeof(thpool));
-  memset(tp, 0, sizeof(thpool));
-  tp->size = size;
   tp->stop = 0;
-  tp->tasks = queue_init();
-  tp->threads = (pthread_t *)malloc(sizeof(pthread_t) * tp->size);
-  memset(tp->threads, 0, sizeof(pthread_t) * tp->size);
-  pthread_mutex_init(&(tp->mutex), NULL);
-  pthread_cond_init(&(tp->cond), NULL);
+  tp->jobs = dlist_init();
+  pthread_mutex_init(&tp->jobs_mutex, NULL);
+  pthread_cond_init(&tp->jobs_cond, NULL);
+  tp->size = size;
+  tp->threads = (pthread_t *)malloc(sizeof(pthread_t) * size);
   for (int i = 0; i < size; ++i) {
-    pthread_create(&(tp->threads[i]), NULL, worker, tp);
+    pthread_create(&tp->threads[i], NULL, &worker, tp);
   }
   return tp;
 }
 
-void thpool_add(thpool *tp, void *fn, void *args) {
-  task *t = (task *)malloc(sizeof(task));
-  t->fn = fn;
-  t->args = args;
-  pthread_mutex_lock(&(tp->mutex));
-  queue_push_back(tp->tasks, t);
-  pthread_mutex_unlock(&(tp->mutex));
-  pthread_cond_signal(&(tp->cond));
+void thpool_add(thpool *tp, void *fn, void *arg) {
+  job *j = (job *)malloc(sizeof(job));
+  j->fn = fn;
+  j->arg = arg;
+  pthread_mutex_lock(&tp->jobs_mutex);
+  dlist_push_back(tp->jobs, j);
+  pthread_mutex_unlock(&tp->jobs_mutex);
+  pthread_cond_signal(&tp->jobs_cond);
 }
 
 void thpool_destroy(thpool *tp) {
   tp->stop = 1;
-  pthread_cond_broadcast(&(tp->cond));
+  pthread_cond_broadcast(&tp->jobs_cond);
   for (int i = 0; i < tp->size; ++i) {
     pthread_join(tp->threads[i], NULL);
   }
-  pthread_cond_destroy(&(tp->cond));
-  pthread_mutex_destroy(&(tp->mutex));
   free(tp->threads);
-  queue_destroy(tp->tasks);
+  pthread_cond_destroy(&tp->jobs_cond);
+  pthread_mutex_destroy(&tp->jobs_mutex);
+  dlist_destroy(tp->jobs);
   free(tp);
 }

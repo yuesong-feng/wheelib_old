@@ -1,6 +1,10 @@
 BUILD_DIR := build
 SRC_DIR := src
 LIB := wheelib
+INC_DIR := -Isrc
+LIB_DIR := -L$(BUILD_DIR)/lib 
+OTHER_LIBS := -lreadline -lpthread
+CFLAGS := -g -Wall
 
 # $@：表示目标文件
 # $^：表示所有依赖文件
@@ -14,12 +18,17 @@ EXES = $(EXE_SRC:%.c=%)
 all: $(EXES) 
 
 $(EXES): %:$(BUILD_DIR)/obj/%.o $(BUILD_DIR)/lib/lib$(LIB).so
-	gcc -L$(BUILD_DIR)/lib -lwheelib $< -o $@
+	gcc $(LIB_DIR) -l$(LIB) $(OTHER_LIBS) $< -o $@
+
+$(EXE_OBJ): $(BUILD_DIR)/obj/%.o:%.c
+	@mkdir -p $(dir $@)
+	gcc -MMD -MP $(INC_DIR) $(CFLAGS) -c $< -o $@
+
 
 ###############################################
 #            Build dynamic library           ##
 ###############################################
-LIB_SRC = $(shell find src -name '*.c')	# all source files
+LIB_SRC = $(shell find $(SRC_DIR) -name '*.c')	# all source files
 LIB_OBJ = $(LIB_SRC:%.c=$(BUILD_DIR)/obj/%.o)				# all object files
 LIB_DEP = $(LIB_OBJ:.o=.d)								# all dependencies
 
@@ -29,9 +38,9 @@ $(BUILD_DIR)/lib/lib$(LIB).so: $(LIB_OBJ)
 	gcc -shared $^ -o $@
 
 # all .c => .o + .d
-$(BUILD_DIR)/obj/%.o: %.c
+$(LIB_OBJ): $(BUILD_DIR)/obj/%.o:%.c
 	@mkdir -p $(dir $@)
-	gcc -MMD -MP -I$(SRC_DIR) -g -Wall -fPIC -c $< -o $@
+	gcc -MMD -MP $(INC_DIR) $(CFLAGS) -fPIC -c $< -o $@
 
 clean:
 	rm -rf $(BUILD_DIR)

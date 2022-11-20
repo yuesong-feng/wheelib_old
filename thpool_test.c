@@ -16,8 +16,8 @@ void thfunc2(struct args* arg) {
 }
 
 int main() {
+	LOG_LEVEL(LOG_DEBUG);
 	thpool *tp = thpool_init(8);
-
 	int a[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	for (int i = 1; i < 10; ++i) {
 		thpool_add(tp, thfunc, a + i - 1);

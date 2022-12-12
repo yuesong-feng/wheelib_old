@@ -19,7 +19,7 @@ typedef struct thpool {
 } thpool;
 
 thpool *thpool_init(int size);
-void thpool_add(thpool *tp, void *fn, void *arg);
+int thpool_add(thpool *tp, void *fn, void *arg);
 void thpool_destroy(thpool *tp);
 
 #endif

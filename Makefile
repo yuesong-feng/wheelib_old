@@ -4,6 +4,7 @@ LIB := wheelib
 INC_DIR := -Isrc
 LIB_DIR := -L$(BUILD_DIR)/lib 
 OTHER_LIBS := -lreadline -lpthread
+CC := gcc
 CFLAGS := -g -Wall
 
 # $@：表示目标文件
@@ -18,11 +19,11 @@ EXES = $(EXE_SRC:%.c=%)
 all: $(EXES) 
 
 $(EXES): %:$(BUILD_DIR)/obj/%.o $(BUILD_DIR)/lib/lib$(LIB).so
-	gcc $(LIB_DIR) -l$(LIB) $(OTHER_LIBS) $< -o $@
+	$(CC) $(LIB_DIR) -l$(LIB) $(OTHER_LIBS) $< -o $@
 
 $(EXE_OBJ): $(BUILD_DIR)/obj/%.o:%.c
 	@mkdir -p $(dir $@)
-	gcc -MMD -MP $(INC_DIR) $(CFLAGS) -c $< -o $@
+	$(CC) -MMD -MP $(INC_DIR) $(CFLAGS) -c $< -o $@
 
 
 ###############################################
@@ -35,12 +36,12 @@ LIB_DEP = $(LIB_OBJ:.o=.d)								# all dependencies
 # all .o => .so
 $(BUILD_DIR)/lib/lib$(LIB).so: $(LIB_OBJ)
 	@mkdir -p $(dir $@)
-	gcc -shared $^ -o $@
+	$(CC) -shared $^ -o $@
 
 # all .c => .o + .d
 $(LIB_OBJ): $(BUILD_DIR)/obj/%.o:%.c
 	@mkdir -p $(dir $@)
-	gcc -MMD -MP $(INC_DIR) $(CFLAGS) -fPIC -c $< -o $@
+	$(CC) -MMD -MP $(INC_DIR) $(CFLAGS) -fPIC -c $< -o $@
 
 clean:
 	rm -rf $(BUILD_DIR)

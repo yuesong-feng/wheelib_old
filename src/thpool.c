@@ -24,26 +24,40 @@ static void *worker(void *arg) {
 
 thpool *thpool_init(int size) {
   thpool *tp = (thpool *)malloc(sizeof(thpool));
+  if (tp == NULL) return NULL;
   tp->stop = 0;
   tp->jobs = dlist_init();
+  if (tp->jobs == NULL) {
+    free(tp);
+    return NULL;
+  }
   pthread_mutex_init(&tp->jobs_mutex, NULL);
   pthread_cond_init(&tp->jobs_cond, NULL);
   tp->size = size;
   tp->threads = (pthread_t *)malloc(sizeof(pthread_t) * size);
+  if (tp->threads == NULL) {
+    free(tp->jobs);
+    free(tp);
+    return NULL;
+  }
   for (int i = 0; i < size; ++i) {
     pthread_create(&tp->threads[i], NULL, &worker, tp);
   }
   return tp;
 }
 
-void thpool_add(thpool *tp, void *fn, void *arg) {
+int thpool_add(thpool *tp, void *fn, void *arg) {
   job *j = (job *)malloc(sizeof(job));
+  if (j == NULL) {
+    return -1;
+  }
   j->fn = fn;
   j->arg = arg;
   pthread_mutex_lock(&tp->jobs_mutex);
   dlist_push_back(tp->jobs, j);
   pthread_mutex_unlock(&tp->jobs_mutex);
   pthread_cond_signal(&tp->jobs_cond);
+  return 0;
 }
 
 void thpool_destroy(thpool *tp) {

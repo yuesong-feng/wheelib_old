@@ -1,5 +1,6 @@
 #ifndef DLIST_H
 #define DLIST_H
+#include <stddef.h>
 
 typedef struct dnode {
   void *val;
@@ -9,12 +10,12 @@ typedef struct dnode {
 
 typedef struct dlist {
   dnode *head;
-  int size;
+  size_t size;
 } dlist;
 
 dlist *dlist_init();
 void dlist_destroy(dlist *dl);
-int dlist_size(dlist *dl);
+size_t dlist_size(dlist *dl);
 int dlist_push_back(dlist *dl, void *val);
 int dlist_push_front(dlist *dl, void *val);
 void dlist_pop_back(dlist *dl);

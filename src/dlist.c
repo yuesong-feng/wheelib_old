@@ -89,4 +89,4 @@ void *dlist_front(dlist *dl) {
   }
 }
 
-int dlist_size(dlist *dl) { return dl->size; }
+size_t dlist_size(dlist *dl) { return dl->size; }

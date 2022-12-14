@@ -5,7 +5,7 @@ INC_DIR := -Isrc
 LIB_DIR := -L$(BUILD_DIR)/lib 
 OTHER_LIBS := -lreadline -lpthread
 CC := gcc
-CFLAGS := -g -Wall
+CFLAGS := -g -Wall -O0
 
 # $@：表示目标文件
 # $^：表示所有依赖文件

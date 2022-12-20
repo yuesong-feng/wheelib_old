@@ -12,7 +12,7 @@ struct args {
 	char *str;
 };
 void thfunc2(struct args* arg) {
-	LOG_DEBUG("Hello %d %s", arg->a, arg->str);
+	log_debug("Hello %d %s", arg->a, arg->str);
 }
 
 int main() {

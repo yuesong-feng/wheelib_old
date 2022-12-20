@@ -13,11 +13,16 @@ void func4 () {
     LOG_DEBUG("func2");
 }
 int main() {
+    LOG_LEVEL(LOG_INFO);
+    LOG_FILE("log.log");
     LOG_DEBUG("main");
-    LOG_LEVEL(LOG_DEBUG);
     func1();
     func2();
     func3();
     func4();
+    int a = 123;
+    const char *str = "test";
+    LOG_WARN("log test %d", a);
+    LOG_WARN("log %s %d", str, a);
     return 0;
 }

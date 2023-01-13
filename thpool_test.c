@@ -1,5 +1,6 @@
 #include "thpool.h"
 #include "log.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
 

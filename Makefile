@@ -1,9 +1,9 @@
 BUILD_DIR := build
 SRC_DIR := src
 LIB := wheelib
-INC_DIR := -Isrc
-LIB_DIR := -L$(BUILD_DIR)/lib 
-OTHER_LIBS := -lreadline -lpthread
+INC_DIR := -Isrc -I/Users/yuesong/Desktop/install/include
+LIB_DIR := -L$(BUILD_DIR)/lib -L/Users/yuesong/Desktop/install/lib
+OTHER_LIBS := -lreadline -lpthread -levent
 CC := gcc
 CFLAGS := -g -Wall -O0
 

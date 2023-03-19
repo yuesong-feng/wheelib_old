@@ -1,20 +1,25 @@
 #include "log.h"
 
-void func1 () {
+void func1()
+{
     LOG_ERROR("func1");
 }
-void func2 () {
+void func2()
+{
     LOG_WARN("func2");
 }
-void func3 () {
-    LOG_INFO("func2");
+void func3()
+{
+    LOG_INFO("func3");
 }
-void func4 () {
-    LOG_DEBUG("func2");
+void func4()
+{
+    LOG_DEBUG("func4");
 }
-int main() {
-    LOG_LEVEL(LOG_INFO);
-    LOG_FILE("log.log");
+int main()
+{
+    LOG_SET_LEVEL(LOG_LEVEL_DEBUG);
+    LOG_SET_FILE("log.log");
     LOG_DEBUG("main");
     func1();
     func2();

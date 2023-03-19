@@ -1,18 +1,13 @@
-#ifndef LOG_H
-#define LOG_H
-#include <stdio.h>
+#ifndef _LOG_H_
+#define _LOG_H_
 
-static FILE *log_fp = NULL;
-
-static enum LOG_LEVEL {
-  LOG_ERROR,
-  LOG_WARN,
-  LOG_INFO,
-  LOG_DEBUG
-} log_level = LOG_INFO;
-
-#define LOG_FILE(log_file) log_fp = fopen(log_file, "a+");
-#define LOG_LEVEL(level) log_level = level;
+enum LOG_LEVEL
+{
+  LOG_LEVEL_DEBUG,
+  LOG_LEVEL_INFO,
+  LOG_LEVEL_WARN,
+  LOG_LEVEL_ERROR
+};
 
 #ifdef __GNUC__
 #define CHECK_FMT(a, b) __attribute__((format(printf, a, b)))
@@ -20,29 +15,16 @@ static enum LOG_LEVEL {
 #define CHECK_FMT(a, b)
 #endif
 
-void log_error(const char *fmt, ...) CHECK_FMT(1, 2);
-void log_warn(const char *fmt, ...) CHECK_FMT(1, 2);
-void log_info(const char *fmt, ...) CHECK_FMT(1, 2);
-void log_debug(const char *fmt, ...) CHECK_FMT(1, 2);
+void log_set_file(const char *file);
+void log_set_level(int level);
+void log_internal(int level, const char *level_str, const char *file, int line, const char *func, const char *fmt, ...) CHECK_FMT(6, 7);
 
-#define LOG_ERROR(fmt, ...)                                    \
-  do {                                                         \
-    if (log_level >= LOG_ERROR) log_error(fmt, ##__VA_ARGS__); \
-  } while (0)
+#define LOG_SET_FILE(file) log_set_file(file);
+#define LOG_SET_LEVEL(level) log_set_level(level);
 
-#define LOG_WARN(fmt, ...)                                   \
-  do {                                                       \
-    if (log_level >= LOG_WARN) log_warn(fmt, ##__VA_ARGS__); \
-  } while (0)
-
-#define LOG_INFO(fmt, ...)                                   \
-  do {                                                       \
-    if (log_level >= LOG_INFO) log_info(fmt, ##__VA_ARGS__); \
-  } while (0)
-
-#define LOG_DEBUG(fmt, ...)                                    \
-  do {                                                         \
-    if (log_level >= LOG_DEBUG) log_debug(fmt, ##__VA_ARGS__); \
-  } while (0)
+#define LOG_DEBUG(fmt, ...) log_internal(LOG_LEVEL_DEBUG, "DEBUG", __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__)
+#define LOG_INFO(fmt, ...) log_internal(LOG_LEVEL_INFO, "INFO", __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__)
+#define LOG_WARN(fmt, ...) log_internal(LOG_LEVEL_WARN, "WARN", __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__)
+#define LOG_ERROR(fmt, ...) log_internal(LOG_LEVEL_ERROR, "ERROR", __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__)
 
 #endif

@@ -16,12 +16,13 @@ struct args
 };
 void thfunc2(struct args *arg)
 {
-	log_debug("Hello %d %s", arg->a, arg->str);
+	LOG_DEBUG("Hello %d %s", arg->a, arg->str);
 }
 
 int main()
 {
-	LOG_LEVEL(LOG_DEBUG);
+	LOG_SET_FILE("log.log");
+	LOG_SET_LEVEL(LOG_LEVEL_DEBUG);
 	thpool *tp = thpool_init(8);
 	int a[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	for (int i = 1; i < 10; ++i)

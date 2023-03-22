@@ -1,8 +1,7 @@
 #ifndef _LOG_H_
 #define _LOG_H_
 
-enum LOG_LEVEL
-{
+enum LOG_LEVEL {
   LOG_LEVEL_DEBUG,
   LOG_LEVEL_INFO,
   LOG_LEVEL_WARN,

@@ -2,6 +2,7 @@
 
 C wheel lib.
 
-stable components that is well designed and can be used in production:
-- log.h log.c
+stable components that are well designed and can be used in production:
 - list.h
+- log.h log.c
+- stack.h stack.c

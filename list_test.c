@@ -1,4 +1,5 @@
 #include "list.h"
+#include "log.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,7 +33,7 @@ void test1() {
   LIST_ADD_TAIL(s.jobs, &j2, link);
 
   job *p = NULL;
-  LIST_FOR_EACH(p, link, s.jobs) { printf("%d, %s\n", p->id, p->name); }
+  LIST_FOR_EACH(p, link, s.jobs) { LOG_INFO("%d, %s", p->id, p->name); }
 }
 
 void test2() {
@@ -54,7 +55,7 @@ void test2() {
   LIST_ADD_HEAD(s->jobs, j2, link);
 
   job *p = NULL;
-  LIST_FOR_EACH(p, link, s->jobs) { printf("%d, %s\n", p->id, p->name); }
+  LIST_FOR_EACH(p, link, s->jobs) { LOG_WARN("%d, %s", p->id, p->name); }
 }
 
 void test3() {
@@ -83,8 +84,8 @@ void test3() {
   LIST_ADD_HEAD(s->jobs2, j2, link2);
 
   job *p = NULL;
-  LIST_FOR_EACH(p, link, s->jobs) { printf("%d, %s\n", p->id, p->name); }
-  LIST_FOR_EACH(p, link2, s->jobs2) { printf("%d, %s\n", p->id, p->name); }
+  LIST_FOR_EACH(p, link, s->jobs) { LOG_INFO("%d, %s", p->id, p->name); }
+  LIST_FOR_EACH(p, link2, s->jobs2) { LOG_ERROR("%d, %s", p->id, p->name); }
 }
 
 int main() {

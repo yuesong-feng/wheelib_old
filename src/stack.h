@@ -22,4 +22,8 @@ void *stack_push(stack *stk, unsigned int size);
 
 void *stack_pop(stack *stk, unsigned int size);
 
+unsigned int stack_size_used(stack *stk);
+
+unsigned int stack_size_remain(stack *stk);
+
 #endif

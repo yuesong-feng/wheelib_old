@@ -1,8 +1,6 @@
 #ifndef _LIST_H_
 #define _LIST_H_
 
-#define NULL ((void *)0)
-
 #define LIST(TYPE)      \
   struct {              \
     unsigned int count; \

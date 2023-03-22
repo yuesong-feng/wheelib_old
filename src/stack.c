@@ -44,3 +44,11 @@ void *stack_pop(stack *stk, unsigned int size) {
   stk->top += size;
   return ret;
 }
+
+unsigned int stack_size_used(stack *stk) {
+  return stk->base + stk->size - stk->top;
+}
+
+unsigned int stack_size_remain(stack *stk) {
+  return stk->top - stk->base;
+}

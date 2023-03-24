@@ -14,7 +14,7 @@
     TYPE *next;         \
   }
 
-#define LIST_INIT_STATIC \
+#define LIST_INITIALIZER \
   { 0, NULL, NULL }
 
 #define LIST_INIT(list)  \
@@ -24,7 +24,7 @@
     (list).end = NULL;   \
   } while (0)
 
-#define LIST_NODE_INIT_STATIC \
+#define LIST_NODE_INITIALIZER \
   { NULL, NULL }
 
 #define LIST_NODE_INIT(node) \

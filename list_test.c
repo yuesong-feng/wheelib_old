@@ -1,8 +1,9 @@
 #include "list.h"
-#include "log.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "log.h"
 
 typedef struct job job;
 struct job {
@@ -20,9 +21,9 @@ struct scheduler {
 };
 
 void test1() {
-  scheduler s = {"yuesong", LIST_INIT_STATIC};
+  scheduler s = {"yuesong", LIST_INITIALIZER};
 
-  job j1 = {1, "feng", LIST_NODE_INIT_STATIC};
+  job j1 = {1, "feng", LIST_NODE_INITIALIZER};
 
   job j2;
   j2.id = 2;

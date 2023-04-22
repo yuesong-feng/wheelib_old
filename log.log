@@ -1,0 +1,14 @@
+[DEBUG] log_test.c:23 main() main
+[ERROR] log_test.c:5 func1() func1
+[WARN] log_test.c:9 func2() func2
+[INFO] log_test.c:13 func3() func3
+[DEBUG] log_test.c:17 func4() func4
+[WARN] log_test.c:30 main() log test 123
+[WARN] log_test.c:31 main() log test 123
+[DEBUG] log_test.c:23 main() main
+[ERROR] log_test.c:5 func1() func1
+[WARN] log_test.c:9 func2() func2
+[INFO] log_test.c:13 func3() func3
+[DEBUG] log_test.c:17 func4() func4
+[WARN] log_test.c:30 main() log test 123
+[WARN] log_test.c:31 main() log test 123

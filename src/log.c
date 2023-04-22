@@ -5,13 +5,13 @@
 #include <string.h>
 
 static FILE *log_fp = NULL;
-static int log_level = LOG_LEVEL_INFO;
+static enum LOG_LEVEL log_level = LOG_LEVEL_INFO;
 
 void log_set_file(const char *file) { log_fp = fopen(file, "a+"); }
 
-void log_set_level(int level) { log_level = level; }
+void log_set_level(enum LOG_LEVEL level) { log_level = level; }
 
-void log_internal(int level, const char *level_str, const char *file, int line,
+void log_internal(enum LOG_LEVEL level, const char *level_str, const char *file, int line,
                   const char *func, const char *fmt, ...) {
   if (level < log_level) return;
 

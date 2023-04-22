@@ -15,8 +15,8 @@ enum LOG_LEVEL {
 #endif
 
 void log_set_file(const char *file);
-void log_set_level(int level);
-void log_internal(int level, const char *level_str, const char *file, int line, const char *func, const char *fmt, ...) CHECK_FMT(6, 7);
+void log_set_level(enum LOG_LEVEL level);
+void log_internal(enum LOG_LEVEL level, const char *level_str, const char *file, int line, const char *func, const char *fmt, ...) CHECK_FMT(6, 7);
 
 #define LOG_SET_FILE(file) log_set_file(file);
 #define LOG_SET_LEVEL(level) log_set_level(level);
